@@ -29,10 +29,10 @@ def count_and_save_words(url):
 
     try:
         r = requests.get(url)
-    except Exception:
+    except Exception as e:
         # errors.append()
         return {
-            "error": "Unable to get URL. Please make sure it's valid and try again."
+            "error": f"Unable to get URL. Please make sure it's valid and try again.\n{e}"
         }
 
     # text processing
@@ -69,6 +69,7 @@ def index():
     if request.method == "POST":
         # get url that the person has entered
         url = request.form["url"]
+        print(url)
         if "http://" not in url[:7]:
             url = "http://" + url
         job = q.enqueue_call(func=count_and_save_words, args=(url,), result_ttl=5000)
