@@ -11,12 +11,14 @@ from bs4 import BeautifulSoup
 from rq import Queue
 from rq.job import Job
 from worker import conn
-from models import *
+
 
 app = Flask(__name__)
 app.config.from_object(os.environ["APP_SETTINGS"])
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 db = SQLAlchemy(app)
+
+from models import *
 
 q = Queue(connection=conn)
 
