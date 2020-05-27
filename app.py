@@ -70,8 +70,8 @@ def index():
         # get url that the person has entered
         url = request.form["url"]
         print(url)
-        if "http://" not in url[:7]:
-            url = "http://" + url
+        # if "http://" not in url[:7]:
+        #     url = "http://" + url
         job = q.enqueue_call(func=count_and_save_words, args=(url,), result_ttl=5000)
         print(job.get_id())
 
