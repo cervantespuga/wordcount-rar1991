@@ -26,9 +26,10 @@ q = Queue(connection=conn)
 def count_and_save_words(url):
 
     # errors = []
-    print(url)
+
     try:
-        r = requests.get(url)
+        print(f"getting:\t{url}")
+        r = requests.get(url).text
     except Exception as e:
         # errors.append()
         return {
@@ -36,7 +37,7 @@ def count_and_save_words(url):
         }
 
     # text processing
-    raw = BeautifulSoup(r.text, "html.parser").get_text()
+    raw = BeautifulSoup(r, "html.parser").get_text()
     nltk.data.path.append("./nltk_data/")  # set the path
     tokens = nltk.word_tokenize(raw)
     text = nltk.Text(tokens)
