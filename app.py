@@ -26,7 +26,7 @@ q = Queue(connection=conn)
 def count_and_save_words(url):
 
     # errors = []
-
+    print(url)
     try:
         r = requests.get(url)
     except Exception as e:
