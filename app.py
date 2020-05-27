@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 from rq import Queue
 from rq.job import Job
 from worker import conn
+from models import *
 
 app = Flask(__name__)
 app.config.from_object(os.environ["APP_SETTINGS"])
@@ -19,18 +20,18 @@ db = SQLAlchemy(app)
 
 q = Queue(connection=conn)
 
-from models import *
-
 
 def count_and_save_words(url):
 
-    errors = []
+    # errors = []
 
     try:
         r = requests.get(url)
-    except:
-        errors.append("Unable to get URL. Please make sure it's valid and try again.")
-        return {"error": errors}
+    except Exception:
+        # errors.append()
+        return {
+            "error": "Unable to get URL. Please make sure it's valid and try again."
+        }
 
     # text processing
     raw = BeautifulSoup(r.text, "html.parser").get_text()
@@ -55,9 +56,9 @@ def count_and_save_words(url):
         db.session.add(result)
         db.session.commit()
         return result.id
-    except:
-        errors.append("Unable to add item to database.")
-        return {"error": errors}
+    except Exception:
+        # errors.append("Unable to add item to database.")
+        return {"error": "Unable to add item to database."}
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -78,18 +79,25 @@ def index():
 def get_results(job_key):
 
     job = Job.fetch(job_key, connection=conn)
-
-    if job.is_finished:
-        result = Result.query.filter_by(id=job.result).first()
-        results = sorted(
-            result.result_no_stop_words.items(),
-            key=operator.itemgetter(1),
-            reverse=True,
-        )[:10]
-        return str(type(results))
+    try:
+        if job.is_finished:
+            if isinstance(job.result, int):
+                result = Result.query.filter_by(id=job.result).first()
+                results = sorted(
+                    result.result_no_stop_words.items(),
+                    key=operator.itemgetter(1),
+                    reverse=True,
+                )[:10]
+                return jsonify(results), 200
+            elif isinstance(job.result, dict):
+                return job.result["error"], 202
+            else:
+                return "unknown error", 202
         # return jsonify(results)
-    else:
-        return "Nay!", 202
+        else:
+            return "Nay!", 202
+    except Exception as e:
+        return f"can't finish the job:\t{e.args}\n{e}", 202
 
 
 if __name__ == "__main__":

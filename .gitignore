@@ -2,6 +2,7 @@
 __pycache__/
 *.py[cod]
 ubuntu/
+snippet.py
 # C extensions
 *.so
 
