@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from rq import Queue
 from rq.job import Job
 from worker import conn
-
+import json
 
 app = Flask(__name__)
 app.config.from_object(os.environ["APP_SETTINGS"])
