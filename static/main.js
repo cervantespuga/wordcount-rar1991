@@ -31,7 +31,7 @@
 
       var timeout = "";
 
-      var poller = function() {
+      var poller = function($scope, $log, $http, $timeout) {
         // fire another request
         $http.get('/results/'+jobID).
           success(function(data, status, headers, config) {
