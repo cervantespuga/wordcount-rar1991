@@ -31,7 +31,7 @@
 
       var timeout = "";
 
-      var poller = function($scope, $log, $http, $timeout) {
+      var poller = function() {
         // fire another request
         $http.get('/results/'+jobID).
           success(function(data, status, headers, config) {
@@ -40,7 +40,7 @@
             } else if (status === 200){
               $log.log(data);
               //$scope.wordcounts = data;
-              //$timeout.cancel(timeout);
+              $timeout.cancel(timeout);
               return false;
             }
             // continue to call the poller() function every 2 seconds
